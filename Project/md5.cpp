@@ -308,7 +308,7 @@ MD5& MD5::finalize()
     if (!finalized) {
         // Save number of bits
         unsigned char bits[8];
-        encode(bits, count, 8);
+        encode(bits, count, 8);  
 
         // pad out to 56 mod 64.
         size_type index = count[0] / 8 % 64;
