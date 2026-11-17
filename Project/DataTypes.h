@@ -83,11 +83,11 @@ namespace  TestingSystem
 			std::int32_t totalQuestions = 0;
 			double percentage = 0.0;
 			std::int32_t grade12 = 1;
-			std::string dataTime;
+			std::string dateTime;
 
 			void calculateMetrics();
 			std::string serialize() const;
-			static bool eserialize(const std::string& line, TestResult& outResult);
+			static bool deserialize(const std::string& line, TestResult& outResult);
 		};
 
 		//незавершений тест
@@ -98,7 +98,7 @@ namespace  TestingSystem
 			std::string categoryName;
 			std::string testName;
 			std::size_t currentQuestionIndex = 0;
-			std::int32_t correctAnswerSoFar = 0;
+			std::int32_t correctAnswersSoFar = 0;
 
 			std::string serialize() const;
 			static bool deserialize(const std::string& line, TestProgress& outProgress);
