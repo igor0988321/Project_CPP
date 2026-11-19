@@ -31,7 +31,7 @@ namespace  TestingSystem
 			static bool deserialize(const std::string& line, User& outUser);
 		};
 
-		//питання тестуї
+		//питання тесту
 		struct Question
 		{
 			std::string text;
@@ -65,7 +65,7 @@ namespace  TestingSystem
 		};
 
 		//категорія
-		struct CategoryUnfo
+		struct CategoryInfo
 		{
 			std::string name;
 			std::vector<TestHeader> tests;
