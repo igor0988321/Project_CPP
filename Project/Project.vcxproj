@@ -146,6 +146,7 @@
     <ClCompile Include="md5.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleMenu.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Manag.h" />
     <ClInclude Include="md5.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="Test.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
