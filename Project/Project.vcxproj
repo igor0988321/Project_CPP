@@ -139,6 +139,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="App.cpp" />
     <ClCompile Include="ConsoleMenu.cpp" />
     <ClCompile Include="DataTypes.cpp" />
     <ClCompile Include="FileManager.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="Test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="App.h" />
     <ClInclude Include="ConsoleMenu.h" />
     <ClInclude Include="DataTypes.h" />
     <ClInclude Include="FileManager.h" />
