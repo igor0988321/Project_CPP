@@ -43,13 +43,13 @@ void ConsoleMenu::frame(int width, int height, int xPos, int yPos)
 	for (int i = 0; i < width - 2; i++)
 		cout << (char)205;
 	cout << (char)188;
-	SetConsoleOutputCP(1251);
+	SetConsoleOutputCP(CP_UTF8);
 }
 
 void ConsoleMenu::Menu::init()
 {
 
-	SetConsoleOutputCP(1251);
+	SetConsoleOutputCP(CP_UTF8);
 	hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
 	GetConsoleScreenBufferInfo(hStdOut, &consoleInfo);

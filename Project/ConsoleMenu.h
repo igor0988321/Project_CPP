@@ -66,7 +66,7 @@ namespace ConsoleMenu
 		{
 			init();
 
-			std::vector<std::string> menuItems = { "Ðîçì³ð åêðàíó", "Êîë³ð òåêñòó", "Êîë³ð ôîíó" };
+			std::vector<std::string> menuItems = { "Розмір екрану", "Колір тексту", "Колір фону", "Вихід" };
 
 			int maxLengthItem = formatItems(menuItems);
 
@@ -132,11 +132,15 @@ namespace ConsoleMenu
 						cout << "   ";
 					}
 					break;
+				case 3:
+					setColor(backColor, backColor);
+					frame(52, 4, widthConsole / 2 - 26, y + 5);
+					break;
 				}
 				setColor(textColor, backColor);
 				int color = (selectedItem == 1) ? posArrowTextColor : posArrowBackColor;
 				setCursorPosition(widthConsole / 2 - 26 + 2 + color * 3, y + 5 + 2);
-				if (selectedItem != 0)
+				if (selectedItem == 1 || selectedItem == 2)
 					cout << " ^ ";
 				key = (KEY)_getch();
 				switch (key)

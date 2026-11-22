@@ -61,6 +61,7 @@ namespace TestingSystem
                     }
                 }
             }
+            return false;
         }
 
 
@@ -742,7 +743,7 @@ namespace TestingSystem
             return all;
         }
 
-        bool FileManager::exportStatics(const std::vector<Models::TestResult>& results, const std::string& filePath, const std::string& reportTitle) 
+        bool FileManager::exportStatics(const std::vector<Models::TestResult>& results, const std::string& filePath, const std::string& reportTitle)
         {
             std::ofstream out(filePath, std::ios::trunc);
             if (!out.is_open())
@@ -750,27 +751,52 @@ namespace TestingSystem
                 return false;
             }
 
-            out << "====================================================================\n";
-            out << "ЗВІТ СТАТИСТИКИ ТЕСТУВАННЯ: " << reportTitle << "\n";
-            out << "====================================================================\n\n";
+            auto padUtf8 = [](const std::string& str, std::size_t width) -> std::string {
+                std::size_t charCount = 0;
+                std::size_t bytePos = 0;
+                std::size_t cutBytePos = str.size();
+                while (bytePos < str.size()) {
+                    unsigned char c = static_cast<unsigned char>(str[bytePos]);
+                    std::size_t charLen = ((c & 0x80) == 0) ? 1 : ((c & 0xE0) == 0xC0) ? 2 : ((c & 0xF0) == 0xE0) ? 3 : 4;
+                    if (width > 3 && charCount == width - 3) cutBytePos = bytePos;
+                    if (charCount == width) return str.substr(0, cutBytePos) + "...";
+                    bytePos += charLen;
+                    charCount++;
+                }
+                return str + std::string(width - charCount, ' ');
+                };
 
-            if (results.empty()) 
+            out << "ЗВІТ СТАТИСТИКИ ТЕСТУВАННЯ: " << reportTitle << "\n\n";
+
+            if (results.empty())
             {
                 out << "Записи за вказаним фільтром відсутні.\n";
                 return true;
             }
 
+            const std::string border = "+----+----------------------+--------------------+------------------------+-----------+--------+---------------------+";
+            out << border << "\n";
+            out << "| " << padUtf8("№", 2)
+                << " | " << padUtf8("Ім'я (ПІБ)", 20)
+                << " | " << padUtf8("Категорія", 18)
+                << " | " << padUtf8("Тест", 22)
+                << " | " << padUtf8("Результат", 9)
+                << " | " << padUtf8("Оцінка", 6)
+                << " | " << padUtf8("Дата та час", 19) << " |\n";
+            out << border << "\n";
+
             for (std::size_t i = 0; i < results.size(); ++i)
             {
                 const Models::TestResult& r = results[i];
-                out << (i + 1) << ". Користувач: " << r.userFullName << "\n"
-                    << "   Категорія:  " << r.categoryName << " -> Тест: " << r.testName << "\n"
-                    << "   Результат:  " << r.correctAnswers << " / " << r.totalQuestions
-                    << " (" << std::fixed << std::setprecision(1) << r.percentage << "%)"
-                    << " | Оцінка (12-бальна): " << r.grade12 << "\n"
-                    << "   Дата:       " << r.dateTime << "\n"
-                    << "--------------------------------------------------------------------\n";
+                out << "| " << padUtf8(std::to_string(i + 1), 2)
+                    << " | " << padUtf8(r.userFullName, 20)
+                    << " | " << padUtf8(r.categoryName, 18)
+                    << " | " << padUtf8(r.testName, 22)
+                    << " | " << padUtf8(std::to_string(r.correctAnswers) + "/" + std::to_string(r.totalQuestions), 9)
+                    << " | " << padUtf8(std::to_string(r.grade12) + "/12", 6)
+                    << " | " << padUtf8(r.dateTime, 19) << " |\n";
             }
+            out << border << "\n";
             return true;
         }
 

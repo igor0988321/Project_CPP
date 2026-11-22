@@ -17,6 +17,37 @@ namespace TestingSystem {
 
         namespace {
 
+            std::string padRightUtf8(const std::string& str, std::size_t width)
+            {
+                std::size_t charCount = 0;
+                std::size_t bytePos = 0;
+                std::size_t cutBytePos = str.size();
+
+                while (bytePos < str.size())
+                {
+                    unsigned char c = static_cast<unsigned char>(str[bytePos]);
+                    std::size_t charLen = 1;
+                    if ((c & 0x80) == 0x00) charLen = 1;
+                    else if ((c & 0xE0) == 0xC0) charLen = 2;
+                    else if ((c & 0xF0) == 0xE0) charLen = 3;
+                    else if ((c & 0xF8) == 0xF0) charLen = 4;
+
+                    if (width > 3 && charCount == width - 3)
+                    {
+                        cutBytePos = bytePos;
+                    }
+                    if (charCount == width)
+                    {
+                        return str.substr(0, cutBytePos) + "...";
+                    }
+
+                    bytePos += charLen;
+                    charCount++;
+                }
+
+                return str + std::string(width - charCount, ' ');
+            }
+
             void clearBuffer() 
             {
                 std::cin.clear();
@@ -189,24 +220,39 @@ namespace TestingSystem {
             {
                 system("cls");
                 std::cout << "=== " << title << " ===\n\n";
-                if (results.empty()) 
+                if (results.empty())
                 {
                     std::cout << "Результатів поки що немає.\n\n";
                     system("pause");
                     return;
                 }
 
-                for (std::size_t i = 0; i < results.size(); ++i) 
+                const std::string border = "+----+----------------------+--------------------+------------------------+-----------+--------+---------------------+";
+                std::cout << border << "\n";
+                std::cout << "| " << padRightUtf8("№", 2)
+                    << " | " << padRightUtf8("Ім'я (ПІБ)", 20)
+                    << " | " << padRightUtf8("Категорія", 18)
+                    << " | " << padRightUtf8("Тест", 22)
+                    << " | " << padRightUtf8("Результат", 9)
+                    << " | " << padRightUtf8("Оцінка", 6)
+                    << " | " << padRightUtf8("Дата та час", 19) << " |\n";
+                std::cout << border << "\n";
+
+                for (std::size_t i = 0; i < results.size(); ++i)
                 {
                     const Models::TestResult& r = results[i];
-                    std::cout << (i + 1) << ". [" << r.dateTime << "] " << r.userFullName << "\n"
-                        << "   " << r.categoryName << " -> " << r.testName << "\n"
-                        << "   Правильно: " << r.correctAnswers << "/" << r.totalQuestions
-                        << " (" << std::fixed << std::setprecision(1) << r.percentage << "%)"
-                        << " | Оцінка: " << r.grade12 << "/12\n"
-                        << "----------------------------------------------------\n";
+                    std::string resStr = std::to_string(r.correctAnswers) + "/" + std::to_string(r.totalQuestions);
+                    std::string gradeStr = std::to_string(r.grade12) + "/12";
+
+                    std::cout << "| " << padRightUtf8(std::to_string(i + 1), 2)
+                        << " | " << padRightUtf8(r.userFullName, 20)
+                        << " | " << padRightUtf8(r.categoryName, 18)
+                        << " | " << padRightUtf8(r.testName, 22)
+                        << " | " << padRightUtf8(resStr, 9)
+                        << " | " << padRightUtf8(gradeStr, 6)
+                        << " | " << padRightUtf8(r.dateTime, 19) << " |\n";
                 }
-                std::cout << "\n";
+                std::cout << border << "\n\n";
                 system("pause");
             }
 
@@ -787,8 +833,8 @@ namespace TestingSystem {
         
         void runApp() 
         {
-            SetConsoleCP(1251);
-            SetConsoleOutputCP(1251);
+            SetConsoleCP(CP_UTF8);
+            SetConsoleOutputCP(CP_UTF8);
 
             Storage::FileManager::initStorage();
             seedDefaultTestsIfEmpty();
